@@ -39,7 +39,7 @@ sudo apt install -y python3-pip
 ### ⬇️ Tải zLocket Tool
 
 ```bash
-git clone https://github.com/Taimugau/zlocket?search=1
+git clone https://github.com/Taimugau/zlocket.git
 ```
 > Lệnh cài môi trường và pip giống lệnh trên máy tính nên không cần hướng dẫn ở đây
 ### 📂 Đến Thư Mục Tool
@@ -67,6 +67,6 @@ Nếu không được hãy thử lệnh `python locket.py`
 
 >Liên hệ qua các mạng xã hội sau:
 
-- [Facebook](Nguyễn Đức Tài)
+- [Facebook](https://www.facebook.com/share/1CqUmnu1P7/)
 - [Zalo](https://zalo.me/0348408538)
 ...
