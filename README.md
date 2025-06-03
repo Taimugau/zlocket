@@ -20,7 +20,7 @@ pip install requests tqdm colorama pystyle urllib3
 ```
 ### 🏃 Chạy Tool
 ```bash
-python zLocket-Tool.py
+python locket.py
 ```
 
 - [x] Nhanh Gọn
@@ -39,7 +39,7 @@ sudo apt install -y python3-pip
 ### ⬇️ Tải zLocket Tool
 
 ```bash
-git clone https://github.com/WusThanhDieu/zLocket-Tool-Pro.git
+git clone https://github.com/Taimugau/zlocket?search=1
 ```
 > Lệnh cài môi trường và pip giống lệnh trên máy tính nên không cần hướng dẫn ở đây
 ### 📂 Đến Thư Mục Tool
@@ -48,17 +48,17 @@ cd zLocket-Tool-Pro
 ```
 ### 📂 Lấy Proxy Nếu Chưa Có (Mõi lần chạy tool thì CURL 1 lần nhé)
 ```bash
-curl -o proxy.txt "https://thanhdieu.com/api/list/proxyv3.txt"
+curl -o proxy.txt "proxy mua nhé"
 ```
 >Hoặc
 ```bash
-curl -o proxy.txt "https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&protocol=http&proxy_format=protocolipport&format=text&timeout=20000"
+curl -o proxy.txt "mua proxy ib"
 ```
 ### 🏃 Chạy Tool
 ```bash
-python zLocket-Tool.py
+python locket.py
 ```
-Nếu không được hãy thử lệnh `python3 zLocket-Tool.py`
+Nếu không được hãy thử lệnh `python locket.py`
 - [x] Sài Được Trên Điện Thoại
 - [x] Dễ Dùng
 - [x] Tiện Nghi
@@ -67,7 +67,6 @@ Nếu không được hãy thử lệnh `python3 zLocket-Tool.py`
 
 >Liên hệ qua các mạng xã hội sau:
 
-- [Facebook](https://www.facebook.com/WusThanhDieu)
-- [Zalo](https://zalo.me/0968091844)
-- [Telegram](https://t.me/WsThanhDieu)
+- [Facebook](Nguyễn Đức Tài)
+- [Zalo](https://zalo.me/0348408538)
 ...
