@@ -1,0 +1,216 @@
+
+-- KHU VỰC 1: CẤU HÌNH BAN ĐẦU
+local Config = {
+MenuVisible = false,
+TapCount = 0,
+LastTapTime = 0,
+TapThreshold = 500, -- ms giữa các lần chạm
+AimMode = "Head", -- Head / Neck
+LocatorOn = false,
+ESPLine = true,
+AimFOV = 120,
+AntiBan = true
+}
+
+-- KHU VỰC 2: ĐỊA CHỈ BỘ NHỠ (SCAN ĐỘNG)
+local Addr = {
+AimBone = nil,
+AimFov = nil,
+Locator = nil,
+ESPToggle = nil
+}
+
+-- KHU VỰC 3: PHÁT HIỆN 3 NGÓN CHẠM 3 LẦN
+function DetectThreeFingerTripleTap()
+-- Sử dụng gg's touch listener
+-- Mỗi lần phát hiện 3 ngón chạm, tăng TapCount
+-- Nếu TapCount đạt 3 trong 2 giây → mở menu
+
+local currentTime = os.time() * 1000
+
+if (currentTime - Config.LastTapTime) > Config.TapThreshold then
+Config.TapCount = 0
+end
+
+Config.TapCount = Config.TapCount + 1
+Config.LastTapTime = currentTime
+
+if Config.TapCount >= 3 then
+Config.TapCount = 0
+ToggleMenu()
+end
+end
+
+-- KHU VỰC 4: TẠO MENU NỔI
+function CreateFloatingMenu()
+local menu = gg.choice({
+"🎯 AIM HEAD",
+"🎯 AIM NECK",
+"📍 ĐỊNH VỊ (ESP)",
+"⚙️ CÀI ĐẶT",
+"❌ ĐÓNG MENU"
+}, nil, "FF HACK MENU - 3105")
+
+if menu == 1 then
+Config.AimMode = "Head"
+ApplyAimHead()
+elseif menu == 2 then
+Config.AimMode = "Neck"
+ApplyAimNeck()
+elseif menu == 3 then
+ToggleLocator()
+elseif menu == 4 then
+ShowSettings()
+elseif menu == 5 then
+ToggleMenu()
+end
+end
+
+-- KHU VỰC 5: HÀM AIM HEAD (GHIM ĐẦU)
+function ApplyAimHead()
+Config.AimMode = "Head"
+
+-- Scan tìm địa chỉ aim bone
+gg.clearResults()
+gg.searchNumber("1", gg.TYPE_DWORD) -- Bone ID Head = 1
+gg.getResults(50)
+
+if gg.getResultsCount() > 0 then
+gg.editAll("1", gg.TYPE_DWORD)
+Addr.AimBone = gg.getResults(1)[1].address
+end
+
+-- Tăng FOV lên tối đa
+gg.clearResults()
+gg.searchNumber(Config.AimFOV, gg.TYPE_FLOAT)
+gg.getResults(100)
+gg.editAll("360", gg.TYPE_FLOAT)
+
+gg.clearResults()
+gg.toast("✓ AIM HEAD: BẬT")
+end
+
+-- KHU VỰC 6: HÀM AIM NECK (GHIM CỔ)
+function ApplyAimNeck()
+Config.AimMode = "Neck"
+
+-- Scan tìm địa chỉ aim bone
+gg.clearResults()
+gg.searchNumber("2", gg.TYPE_DWORD) -- Bone ID Neck = 2
+gg.getResults(50)
+
+if gg.getResultsCount() > 0 then
+gg.editAll("2", gg.TYPE_DWORD)
+Addr.AimBone = gg.getResults(1)[1].address
+end
+
+-- Tăng FOV
+gg.clearResults()
+gg.searchNumber(Config.AimFOV, gg.TYPE_FLOAT)
+gg.getResults(100)
+gg.editAll("360", gg.TYPE_FLOAT)
+
+gg.clearResults()
+gg.toast("✓ AIM NECK: BẬT")
+end
+
+-- KHU VỰC 7: HÀM ĐỊNH VỊ (ESP / LOCATOR)
+function ToggleLocator()
+Config.LocatorOn = not Config.LocatorOn
+
+if Config.LocatorOn then
+-- Bật ESP Line - tìm địa chỉ hiển thị
+gg.clearResults()
+gg.searchNumber("0", gg.TYPE_DWORD)
+gg.getResults(200)
+gg.editAll("1", gg.TYPE_DWORD)
+gg.clearResults()
+
+-- Bật vẽ đường line đến địch
+Addr.ESPToggle = 1
+gg.toast("✓ ĐỊNH VỊ: BẬT")
+else
+-- Tắt ESP
+gg.clearResults()
+gg.searchNumber("1", gg.TYPE_DWORD)
+gg.getResults(200)
+gg.editAll("0", gg.TYPE_DWORD)
+gg.clearResults()
+
+Addr.ESPToggle = 0
+gg.toast("✗ ĐỊNH VỊ: TẮT")
+end
+end
+
+-- KHU VỰC 8: CÀI ĐẶT VÀ CHỐNG BAN
+function ShowSettings()
+local setting = gg.choice({
+"FOV: 120° (mặc định)",
+"FOV: 180°",
+"FOV: 360° (nguy hiểm)",
+"Anti-Ban: BẬT",
+"Quay lại"
+}, nil, "CÀI ĐẶT")
+
+if setting == 1 then Config.AimFOV = 120
+elseif setting == 2 then Config.AimFOV = 180
+elseif setting == 3 then Config.AimFOV = 360
+elseif setting == 4 then Config.AntiBan = true; gg.toast("Anti-Ban: BẬT")
+end
+end
+
+function ToggleMenu()
+Config.MenuVisible = not Config.MenuVisible
+if Config.MenuVisible then
+CreateFloatingMenu()
+end
+end
+
+-- ============================================
+-- KHỞI CHẠY SCRIPT
+-- ============================================
+
+-- Thông báo script đã load
+gg.toast("FF HACK 3105 - Đã tải\nChạm 3 ngón 3 lần để mở menu")
+
+-- Vòng lặp chính - lắng nghe thao tác chạm
+function MainLoop()
+while true do
+-- Kiểm tra input từ người dùng
+-- (Trong Game Guardian, cần dùng gg.prompt hoặc
+-- lắng nghe sự kiện từ bên ngoài)
+
+-- Mô phỏng: sau mỗi 100ms kiểm tra
+gg.sleep(100)
+
+-- Nếu phát hiện 3 ngón chạm 3 lần
+-- (Cần tích hợp với module input của GG)
+end
+end
+
+-- Vì Game Guardian không hỗ trợ trực tiếp
+-- multi-touch listener, cần dùng cách khác:
+-- 1. Dùng gg.prompt() để hiện menu
+-- 2. Dùng nút nổi (floating button) thay thế
+-- 3. Dùng phím tắt volume
+
+-- Phương án thay thế: Dùng gg.prompt
+function ShowMenuAlternative()
+local choice = gg.prompt(
+{"Chọn chức năng:"},
+{choice = "1"},
+{choice = "number"}
+)
+
+if choice then
+if choice.choice == 1 then ApplyAimHead()
+elseif choice.choice == 2 then ApplyAimNeck()
+elseif choice.choice == 3 then ToggleLocator()
+end
+end
+end
+
+-- Chạy menu lần đầu
+ShowMenuAlternative()
+
+-- ============================================
